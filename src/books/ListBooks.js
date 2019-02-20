@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-
+import Book from './Book'
 
 class ListBooks extends Component {
                 
@@ -20,7 +20,7 @@ class ListBooks extends Component {
                 <div className="bookshelf-books">
                     <ol className="books-grid">
                     {showingBooks.map((book) => (
-                   //<Book /> ? 
+                  
                     <div className="book">
                         <div className="book-top">
                             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
