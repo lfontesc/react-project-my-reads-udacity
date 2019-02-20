@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 class ListBooks extends Component {
                 
-   //transformar select em componente
     render(){
         const { books } = this.props
         const showingBooks = books
