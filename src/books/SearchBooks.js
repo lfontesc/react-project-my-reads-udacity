@@ -8,7 +8,7 @@ class SearchBooks extends Component {
 
     state = {
         query: ''
-        }
+    }
 
     updateQuery = (query) => {
             if (query !== "")
@@ -43,11 +43,10 @@ class SearchBooks extends Component {
             <div>
                 <div className="search-books">
                 <div className="search-books-bar">
-                <Link className='close-create-contact'
-                    to='/'>
+                <Link className='close-create-contact' to='/'>
                     <button className="close-search">Close</button>
                 </Link>
-                    <div className="search-books-input-wrapper">
+                <div className="search-books-input-wrapper">
                     <DebounceInput
                         type="text"
                         minLength={3}
@@ -57,7 +56,7 @@ class SearchBooks extends Component {
                         onChange={(event) => this.updateQuery(event.target.value)} 
                     />
                     
-                    </div>
+                </div>
                 </div>
                 {showBooks.length == 0 && (
                     <div>
@@ -76,10 +75,7 @@ class SearchBooks extends Component {
                         onUpdateBookList={(book, shelf) => {
                         this.updateBook(book, shelf)
                         }}
-                    />
-                  
-                  
-                    
+                    />    
                 </div>
                 </div>
             </div>

@@ -10,11 +10,11 @@ import NotFound from './NotFound'
 
 class BooksApp extends React.Component {
 
-  state={
+  state = {
     books: []
   }
- 
-  //Trazendo livros da API
+
+  /* Trazendo livros da API */
   componentDidMount(){
     BooksAPI.getAll()
     .then((books) => {
@@ -41,25 +41,25 @@ class BooksApp extends React.Component {
 }
 
   render() {
+
     return (
       <div className="app">
-      <Switch>
-      <Route exact path='/' render={() => (
-        <ListBooks books={this.state.books} />
-        )} />
-      <Route exact path='/search' render={() => (
-        <SearchBooks
-          books={this.state.books} 
-          onUpdateBook={(book, shelf) => { 
-          this.updateBook(book, shelf) 
-        }}
-        onSearchBook={(query) => {
-          this.searchBook(query)
-        }}
-        />
-        )} />
-      <Route component={NotFound} />
-      </Switch>
+        <Switch>
+          <Route exact path='/' render={() => (
+            <ListBooks books={this.state.books} />
+          )} />
+          <Route exact path='/search' render={({ history }) => (
+            <SearchBooks
+              books={this.state.books} 
+              onUpdateBook={(book, shelf) => { 
+              this.updateBook(book, shelf)
+              history.push('/') 
+              }}
+            />
+          )} />
+          <Route component={NotFound} />
+        </Switch>
+        
       </div>
     )
   }
