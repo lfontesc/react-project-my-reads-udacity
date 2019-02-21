@@ -2,8 +2,6 @@ import React from 'react'
 import * as BooksAPI from './api/BooksAPI'
 import './App.css'
 import { Route, Switch } from 'react-router-dom'
-import { Link } from 'react-router-dom'
-
 
 /* Custom Components */
 import SearchBooks from './books/SearchBooks'
@@ -16,7 +14,8 @@ class BooksApp extends React.Component {
     books: []
   }
  
-  componentWillMount(){
+  //Trazendo livros da API
+  componentDidMount(){
     BooksAPI.getAll()
     .then((books) => {
       this.setState(() => ({
@@ -26,6 +25,21 @@ class BooksApp extends React.Component {
     
   }
 
+  searchBook(query) {
+    BooksAPI.search(query).then((booksList) => {
+        this.setState({books: booksList})
+    })
+}
+
+  updateBook(book, shelf) {
+    BooksAPI.update(book, shelf).then(rbook => {     
+      book.shelf = shelf
+      this.setState((state) => ({
+        books: state.books.filter((b) => (b.id !== book.id)).concat([book])
+      }))
+    })
+}
+
   render() {
     return (
       <div className="app">
@@ -34,7 +48,15 @@ class BooksApp extends React.Component {
         <ListBooks books={this.state.books} />
         )} />
       <Route exact path='/search' render={() => (
-        <SearchBooks />
+        <SearchBooks
+          books={this.state.books} 
+          onUpdateBook={(book, shelf) => { 
+          this.updateBook(book, shelf) 
+        }}
+        onSearchBook={(query) => {
+          this.searchBook(query)
+        }}
+        />
         )} />
       <Route component={NotFound} />
       </Switch>

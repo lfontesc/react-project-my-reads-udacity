@@ -1,33 +1,43 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import * as BooksAPI from '../api/BooksAPI'
 import {DebounceInput} from 'react-debounce-input';
+import Book from './Book'
+import escapeRegExp from 'escape-string-regexp'
 
 class SearchBooks extends Component {
 
     state = {
-        findBooks: [],
         query: ''
         }
 
+    updateQuery = (query) => {
+            if (query !== "")
+                this.props.onSearchBook(query);
+    
+            this.setState({ query: query })
+    }
 
-    handleSearch(e) {
-        if (e.target.value !== "") {
-          this.setState({ query: e.target.value });
-          BooksAPI.search(this.state.query).then(findBooks => {
-            this.setState({ findBooks: !findBooks || findBooks.error ? [] : findBooks });
-          });
-        } else {
-          this.setState({ findBooks: [] });
-        }
-      }
+    clearQuery = () => {
+        // Atualiza o estado do componente e atualiza a IU
+        this.setState({ query: '' })
+    }
 
+      updateBook = (book, shelf) => {
+        this.props.onUpdateBook(book, shelf);
+    }
     render(){
        
+        let showBooks
         const { query } = this.state
         const { books } = this.props
-        const a = BooksAPI.search(query).then()
-        console.log(a)
+
+        if (query) {
+            const  match = new RegExp(escapeRegExp(query), 'i')
+            showBooks = books.filter((book) => match.test([book.title,book.authors]))
+        // Se não retorna todos os valores
+        } else {
+            showBooks = books
+        }
        
         return (
             <div>
@@ -43,35 +53,31 @@ class SearchBooks extends Component {
                         minLength={3}
                         debounceTimeout={300}
                         placeholder="Search by title or author"
-                        onChange={this.handleSearch.bind(this)} 
+                        value={query} 
+                        onChange={(event) => this.updateQuery(event.target.value)} 
                     />
                     
                     </div>
                 </div>
-
+                {showBooks.length == 0 && (
+                    <div>
+                        <span>Nenhum livro encontrado para a sua busca! </span>
+                    </div>
+                )}
+                {showBooks.length !== books.length &&  (
+                    <div>
+                        <span>Mostrando {showBooks.length} de {books.length} livros </span>
+                        <button onClick={this.clearQuery}> Mostrar todos</button>
+                    </div>
+                )}
                 <div className="search-books-results">
-                    <ol className="books-grid">
-                        {this.state.findBooks.map(book => (
-                          <div className="book">
-                          <div className="book-top">
-                              <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
-                              <div className="book-shelf-changer">
-                           
-                              <select>
-                                  <option value="move" disabled>Move to...</option>
-                                  <option value="currentlyReading">Currently Reading</option>
-                                  <option value="wantToRead">Want to Read</option>
-                                  <option value="read">Read</option>
-                                  <option value="none">None</option>
-                              </select>
-                              </div>
-                          </div>
-                          <div className="book-title">{book.title}</div>
-                          <div className="book-authors">{[book.authors]}</div>
-                      </div>
-
-                    ))}
-                    </ol>
+                    <Book
+                        books={showBooks}
+                        onUpdateBookList={(book, shelf) => {
+                        this.updateBook(book, shelf)
+                        }}
+                    />
+                  
                   
                     
                 </div>

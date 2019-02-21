@@ -4,7 +4,29 @@ import Book from './Book'
 
 class ListBooks extends Component {
                 
+    updateBook = (book, shelf) => {
+        if (this.props.onUpdateBook)
+            this.props.onUpdateBook(book, shelf);
+    }
+
     render(){
+
+
+        const bookShelves = [
+            {
+                id: "currentlyReading",
+                name: "Currently Reading",
+            },
+            {
+                id: "read",
+                name: "Read",
+            },
+            {
+                id: "wantToRead",
+                name: "Want to Read",
+            }
+        ]
+
         const { books } = this.props
         const showingBooks = books
         return (
@@ -16,101 +38,26 @@ class ListBooks extends Component {
             <div className="list-books-content">
             <div>
                 <div className="bookshelf">
-                <h2 className="bookshelf-title">Currently Reading</h2>
-                <div className="bookshelf-books">
-                    <ol className="books-grid">
-                    {showingBooks.map((book) => (
-                  
-                    <div className="book">
-                        <div className="book-top">
-                            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
-                            <div className="book-shelf-changer">
-                         
-                            <select>
-                                <option value="move" disabled>Move to...</option>
-                                <option value="currentlyReading">Currently Reading</option>
-                                <option value="wantToRead">Want to Read</option>
-                                <option value="read">Read</option>
-                                <option value="none">None</option>
-                            </select>
-                            </div>
-                        </div>
-                        <div className="book-title">{book.title}</div>
-                        <div className="book-authors">{[book.authors]}</div>
-                    </div>
-
-
-                  
+                {bookShelves.map(shelf => (
+                    <div key={shelf.id}>
+                     <h2 className="bookshelf-title">{shelf.name}</h2>
+                     <Book
+                        books={books.filter(book => book.shelf === shelf.id)}
+                        onUpdateBookList={(book, shelf) => { // Responsável por atualizar o livro
+                        this.updateBook(book, shelf)
+                                        }}
+                                    />
+                                    </div>
                 ))}
-                    </ol>
+            
                 </div>
-                </div>
-                <div className="bookshelf">
-                <h2 className="bookshelf-title">Want to Read</h2>
-                <div className="bookshelf-books">
-                    <ol className="books-grid">
-                    {showingBooks.map((book) => (
-                    
-                    <div className="book">
-                        <div className="book-top">
-                            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
-                            <div className="book-shelf-changer">
-                         
-                            <select>
-                                <option value="move" disabled>Move to...</option>
-                                <option value="currentlyReading">Currently Reading</option>
-                                <option value="wantToRead">Want to Read</option>
-                                <option value="read">Read</option>
-                                <option value="none">None</option>
-                            </select>
-                            </div>
-                        </div>
-                        <div className="book-title">{book.title}</div>
-                        <div className="book-authors">{[book.authors]}</div>
-                    </div>
-
-
-                  
-                ))}
-                    </ol>
-                </div>
-                </div>
-                <div className="bookshelf">
-                <h2 className="bookshelf-title">Read</h2>
-                <div className="bookshelf-books">
-                    <ol className="books-grid">
-                    {showingBooks.map((book) => (
-                    
-                    <div className="book">
-                        <div className="book-top">
-                            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
-                            <div className="book-shelf-changer">
-                         
-                            <select>
-                                <option value="move" disabled>Move to...</option>
-                                <option value="currentlyReading">Currently Reading</option>
-                                <option value="wantToRead">Want to Read</option>
-                                <option value="read">Read</option>
-                                <option value="none">None</option>
-                            </select>
-                            </div>
-                        </div>
-                        <div className="book-title">{book.title}</div>
-                        <div className="book-authors">{[book.authors]}</div>
-                    </div>
-
-
-                  
-                ))}
-                    </ol>
-                </div>
-                </div>
+         
             </div>
             </div>
             <div className="open-search">
             <Link className='close-create-contact'
                     to='/search'>
-                    <button>Add a book</button>
+                    <button>Buscar</button>
             </Link>
             </div>
         </div>
